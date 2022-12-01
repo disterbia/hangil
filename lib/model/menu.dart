@@ -12,7 +12,7 @@ class Menu{
   Menu.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         name=json["name"],
-        created=json["created"];
+        created=json["created"].toDate();
 
   Map<String, dynamic> toJson() =>{
     "name":name,

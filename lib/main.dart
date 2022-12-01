@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hangil/router/myGoRouter.dart';
+import 'package:hangil/components/custom_scroll.dart';
+import 'package:hangil/router/my_go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 
@@ -18,7 +19,7 @@ void main() async {
   );
   setPathUrlStrategy(); //샵없애기
   runApp(GetMaterialApp.router(
-    //scrollBehavior: CustomScroll(),
+    scrollBehavior: CustomScroll(),
     title: "Hangil",
     debugShowCheckedModeBanner: false,
     routeInformationParser: MyPages.router.routeInformationParser,

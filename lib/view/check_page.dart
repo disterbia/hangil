@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Check extends StatelessWidget {
+class CheckPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

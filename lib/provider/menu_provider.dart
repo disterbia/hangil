@@ -7,7 +7,7 @@ class MenuProvider{
   final _store = FirebaseFirestore.instance;
 
   Future<QuerySnapshot> findAll() =>
-      _store.collection(_collection).orderBy("created", descending: true).get();
+      _store.collection(_collection).orderBy("created", descending: false).get();
 
   Future<DocumentSnapshot> save(Menu menu) =>
       _store.collection(_collection).add(menu.toJson()).then((v) async {

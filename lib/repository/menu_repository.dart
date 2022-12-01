@@ -14,9 +14,9 @@ class MenuRepository{
     return menus;
   }
 
-  Future<Menu> save(Menu menu) async {
+  Future<void> save(Menu menu) async {
     DocumentSnapshot result = await _menuProvider.save(menu);
-    return Menu.fromJson(result.data() as Map<String, dynamic>);
+    // return Menu.fromJson(result.data() as Map<String, dynamic>);
   }
 
   Future<void> update(Menu menu) async {
