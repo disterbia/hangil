@@ -7,6 +7,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: "AIzaSyDvismzFA0-WvMnuBMozVXQPwmZYbd02t4",
@@ -35,6 +36,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(child: Text("dd"),);
   }
 }

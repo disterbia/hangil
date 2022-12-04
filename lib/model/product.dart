@@ -4,7 +4,8 @@ class Product {
   final String? id;
   final String? name;
   final String? comment;
-  final int? price;
+  final String? body;
+  final String? price;
   final String? category;
   final List<dynamic>? imageUrls;
   final DateTime? created;
@@ -13,6 +14,7 @@ class Product {
     this.name,
     this.comment,
     this.price,
+    this.body,
     this.category,
     this.imageUrls,
     this.created,});
@@ -22,6 +24,7 @@ class Product {
         name = json["name"],
         comment = json["comment"],
         price = json["price"],
+        body=json["body"],
         category = json["category"],
         imageUrls = json["image_urls"],
         created = json["created"].toDate();
@@ -31,6 +34,7 @@ class Product {
         "name": name,
         "comment": comment,
         "price": price,
+        "body" : body,
         "category": category,
         "image_urls": imageUrls,
         "created": FieldValue.serverTimestamp(),

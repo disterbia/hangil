@@ -22,11 +22,11 @@ class Test4 extends StatelessWidget {
             // var ajson=json.replaceAll("\\n","\\\\n");
             print(json);
           }, child: Container()),
-          //QuillToolbar.basic(controller: _controller,),
+          QuillToolbar.basic(controller: _controller,),
           Container(width: 50,
             child: QuillEditor.basic(
               controller: _controller,
-              readOnly: true, // true for view only mode
+              readOnly: false, // true for view only mode
             ),
           )
         ],
