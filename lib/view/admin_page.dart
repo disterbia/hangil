@@ -31,6 +31,7 @@ class AdminPage extends GetView<MenuController> {
   RxBool selectionChange=false.obs;
   List<String> deleteList = [];
   String? category;
+  int? categoryIndex;
 
   bool isDeskTop = GetPlatform.isDesktop;
   double screenHeight = Get.height;
@@ -146,7 +147,11 @@ class AdminPage extends GetView<MenuController> {
                                       body:json
                                     )
                                 );
+                                //p.changeCategory(categoryIndex!);
+                                context.go("/home/$categoryIndex");
+                                await p.findAll();
                               }
+
                             }
                             },
                         child: Text("상품 업로드"))
@@ -314,6 +319,7 @@ class AdminPage extends GetView<MenuController> {
                         selectionChange.value= !selectionChange.value;
                       }
                       category = m.menus[index].id;
+                      categoryIndex=index;
                     },
                     selectedColor: Colors.red,
                   )),

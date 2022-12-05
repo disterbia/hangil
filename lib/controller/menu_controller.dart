@@ -7,7 +7,7 @@ class MenuController extends GetxController with StateMixin{
 
   final MenuRepository _menuRepository = MenuRepository();
   final menus = <Menu>[].obs;
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
 
   @override
   void onInit() {
