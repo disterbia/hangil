@@ -7,6 +7,7 @@ import 'package:hangil/controller/menu_controller.dart';
 import 'package:hangil/controller/product_controller.dart';
 import 'package:hangil/model/menu.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class HomePage extends GetView<ProductController> {
 
@@ -19,13 +20,17 @@ class HomePage extends GetView<ProductController> {
   final _selections = <bool>[].obs;
   String? param;
   bool isDeskTop = GetPlatform.isDesktop;
-  double screenHeight = Get.height;
-  double screenWidth = Get.width;
-
+  final screenHeight = Get.height.obs;
+  final screenWidth = Get.width.obs;
+  bool priceIsNumber =true;
+  List<bool> priceList =[];
 
 
   @override
   Widget build(BuildContext context) {
+    if(screenWidth.value<MediaQuery.of(context).size.width) {
+      screenWidth.value = MediaQuery.of(context).size.width;
+    }
     return controller.obx((state) {
       if (p.isLoading.value) {
         return Center(
@@ -33,121 +38,138 @@ class HomePage extends GetView<ProductController> {
                 height: 50, width: 50, child: CircularProgressIndicator()));
       }
       else{
+        priceList.clear();
         int length = m.menus.length;
         _selections.value = List.generate(length, (index) => false);
         param=param??"0";
         _selections.length!=0?_selections[int.parse(param!)] = true:null;
         //nowCategory =_selections.length!=0? m.menus[int.parse(param!)].id:null;
         p.changeCategory(int.parse(param!));
-
+        for(int i=0 ; i<p.products.length;i++){
+          try{
+            int.parse(p.products[i].price!);
+            priceList.add(true);
+          }catch(e){
+            priceList.add(false);
+          }
+        }
 
       }
         return Obx(
           () {
             return SafeArea(
-              child: Scaffold(
-                  body: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(),
-                                CustomLogo(),
-                                Container(
-                                    height: 70,
-                                    child: Row(
-                                      children: [
-                                        Image.asset("assets/kakao.png")
-                                      ],
-                                    )),
-                              ],
-                            ),
-                            isDeskTop
-                                ? Row(children: createButton(0, 6,context))
-                                : Column(
-                              children: [
-                                Row(children: createButton(0, 3,context)),
-                                Row(children: createButton(3, 6,context))
-                              ],
-                            ),
-                            Container(
-                              width: screenWidth,
-                              child: GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: p.products.length,
-                                gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: isDeskTop ? 4 : 2,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 20,
-                                  childAspectRatio: isDeskTop ? 0.8 : 0.7,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Scaffold(
+                    body: SingleChildScrollView(
+                        child: SingleChildScrollView(scrollDirection: Axis.horizontal,
+                          child: Column(
+                            children: [
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: screenWidth.value,
                                 ),
-                                itemBuilder: (context, index) {
-                                  return Column(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
-                                        flex: 10,
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                          p.products[index].imageUrls![0]!,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                              GestureDetector(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover,
-                                                      // colorFilter:
-                                                      // ColorFilter.mode(Colors.red, BlendMode.colorBurn)
+                                      Container(),
+                                      CustomLogo(),
+                                      Container(
+                                          child: IconButton(onPressed: (){}, icon: Image.asset("assets/kakao.png"),iconSize: 70, )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              isDeskTop
+                                  ? Row(children: createButton(0, 6,context))
+                                  : Column(
+                                children: [
+                                  Row(children: createButton(0, 3,context)),
+                                  Row(children: createButton(3, 6,context))
+                                ],
+                              ),
+                              Container(
+                                width: screenWidth.value,
+                                child: GridView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: p.products.length,
+                                  gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: isDeskTop ? 4 : 2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 20,
+                                    childAspectRatio: isDeskTop ? 0.8 : 0.7,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        Expanded(
+                                          flex: 10,
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                            p.products[index].imageUrls![0]!,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                GestureDetector(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                        // colorFilter:
+                                                        // ColorFilter.mode(Colors.red, BlendMode.colorBurn)
+                                                      ),
                                                     ),
                                                   ),
+                                                  onTap: () async {
+                                                    String param =
+                                                    p.products[index].id!;
+                                                    await p.findById(param);
+                                                    context.go("/detail/$param");
+                                                    // Get.to(() => DetailPage(),
+                                                    //     transition: Transition.size);
+                                                  },
                                                 ),
-                                                onTap: () async {
-                                                  String param =
-                                                  p.products[index].id!;
-                                                  await p.findById(param);
-                                                  context.go("/detail/$param");
-                                                  // Get.to(() => DetailPage(),
-                                                  //     transition: Transition.size);
-                                                },
-                                              ),
-                                          //placeholder: (context, url) => CircularProgressIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
+                                            //placeholder: (context, url) => CircularProgressIndicator(),
+                                            errorWidget: (context, url, error) =>
+                                                Icon(Icons.error),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                          child: Text(
-                                            p.products[index].name!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                      Expanded(
-                                          child:
-                                          Text(p.products[index].comment!)),
-                                      // Expanded(
-                                      //     child: Text(
-                                      //       NumberFormat("###,###,### 원")
-                                      //           .format(p.products[index].price!),
-                                      //       style: TextStyle(color: Colors.orange),
-                                      //     )),
-                                    ],
-                                  );
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ))),
+                                        Expanded(
+                                            child: Text(
+                                              p.products[index].name!,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            )),
+                                        Expanded(
+                                            child:
+                                            Text(p.products[index].comment!)),
+                                        Expanded(
+                                            child: Text(
+                                              priceList[index]?NumberFormat("###,###,### 원")
+                                                  .format(int.parse(p.products[index].price!)):p.products[index].price!,
+                                              style: TextStyle(color: Colors.orange),
+                                            )),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+
+                          ),
+                        ))),
+              ),
             );
           },
       );
       },
+        onLoading: Center(
+            child: Container(
+                height: 50, width: 50, child: CircularProgressIndicator()))
     );
   }
   List<Widget> createButton(int a, int b,BuildContext context) {

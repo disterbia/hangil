@@ -33,12 +33,12 @@ class ProductController extends GetxController with StateMixin {
   }
 
   Future<void> findById(String id) async {
-    change(null,status: RxStatus.loading());
+   // change(null,status: RxStatus.loading());
     isLoading.value=true;
     Product product = await _productRepository.findById(id);
     this.product.value = product;
     isLoading.value=false;
-    change(null, status: RxStatus.success());
+    //change(null, status: RxStatus.success());
   }
 
   Future<void> findByCategory(String category) async {

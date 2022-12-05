@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hangil/components/custom_scroll.dart';
 import 'package:hangil/router/my_go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -18,6 +19,7 @@ void main() async {
           appId: "1:1061346092985:web:c15be64a94c2f806453868",
           measurementId: "G-0SHV67H1DV")
   );
+  await GetStorage.init();
   setPathUrlStrategy(); //샵없애기
   runApp(GetMaterialApp.router(
     scrollBehavior: CustomScroll(),
