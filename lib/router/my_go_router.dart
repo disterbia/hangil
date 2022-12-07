@@ -20,7 +20,6 @@ class MyPages {
   static late final  router = GoRouter(
     redirect: (state){
       String? uid=GetStorage().read("id");
-      print(uid);
       if(state.subloc=="/") return '/home/0';
       if(state.subloc=="/mj"&&uid!="fn34nfnv8avf9ni30an"){
 

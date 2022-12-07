@@ -21,6 +21,7 @@ class ProductController extends GetxController with StateMixin {
   }
 
   Future<void> findAll() async{
+    print("dd");
     productsList.clear();
     change(null,status: RxStatus.loading());
     await m.findAll();

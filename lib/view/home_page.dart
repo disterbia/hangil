@@ -58,41 +58,41 @@ class HomePage extends GetView<ProductController> {
         return Obx(
           () {
             return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Scaffold(
-                    body: SingleChildScrollView(
-                        child: SingleChildScrollView(scrollDirection: Axis.horizontal,
-                          child: Column(
-                            children: [
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: screenWidth.value,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(),
-                                      CustomLogo(),
-                                      Container(
-                                          child: IconButton(onPressed: (){}, icon: Image.asset("assets/kakao.png"),iconSize: 70, )),
-                                    ],
-                                  ),
+              child: Scaffold(
+                  body: SingleChildScrollView(
+                      child: SingleChildScrollView(scrollDirection: Axis.horizontal,
+                        child: Column(
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: screenWidth.value,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 40,top: 20,bottom: 20,left: 40),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(),
+                                    CustomLogo(),
+                                    IconButton(onPressed: (){}, icon: Container(child: Image.asset("assets/kakao.png")),iconSize: 70, )
+                                  ],
                                 ),
                               ),
-                              isDeskTop
-                                  ? Row(children: createButton(0, 6,context))
-                                  : Column(
-                                children: [
-                                  Row(children: createButton(0, 3,context)),
-                                  Row(children: createButton(3, 6,context))
-                                ],
-                              ),
-                              Container(
-                                width: screenWidth.value,
+                            ),
+                            isDeskTop
+                                ? Row(children: createButton(0, 6,context))
+                                : Column(
+                              children: [
+                                Row(children: createButton(0, 3,context)),
+                                Row(children: createButton(3, 6,context))
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Container(
+                                width: screenWidth.value-40,
                                 child: GridView.builder(
+                                  padding: const EdgeInsets.all(10.0),
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: p.products.length,
@@ -157,12 +157,22 @@ class HomePage extends GetView<ProductController> {
                                     );
                                   },
                                 ),
-                              )
-                            ],
+                              ),
+                            ),
+                            Container(height: 100,width:screenWidth.value,color: Colors.black54,child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text("dd"),
+                                    Text("dd"),
+                                  ],
+                                ),
+                              ],
+                            ),)
+                          ],
 
-                          ),
-                        ))),
-              ),
+                        ),
+                      ))),
             );
           },
       );
