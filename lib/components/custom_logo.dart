@@ -8,10 +8,7 @@ class CustomLogo extends StatelessWidget {
     return MouseRegion(cursor: SystemMouseCursors.click,
       child: GestureDetector(
           onTap: () => context.go("/"),
-          child: Container(
-            height: 100,
-            child: Image.asset("assets/logo.png"),
-          )),
+          child: Image.asset("assets/logo.png",height: 80,)),
     );
   }
 }
