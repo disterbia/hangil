@@ -5,6 +5,13 @@ class AdminRepository{
 
   AdminProvider _adminProvider = AdminProvider();
 
+Future<dynamic> findCompanyInfo() async {
+  QuerySnapshot querySnapshot = await _adminProvider.findCompanyInfo();
+  Map<String,dynamic>? json =  querySnapshot.docs[0].data() as Map<String,dynamic>;
+  String info = json['info'];
+  return info;
+}
+
   Future<dynamic> findByPassword(String password) async {
     QuerySnapshot querySnapshot = await _adminProvider.findByPassword(password);
     if(querySnapshot.docs.isEmpty) {
