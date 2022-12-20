@@ -15,8 +15,9 @@ import 'package:hangil/util/custom_screen_width.dart';
 import 'package:intl/intl.dart';
 
 class DetailPage extends GetView<ProductController> {
-  DetailPage({this.param});
+  DetailPage({this.param,this.index});
   String? param;
+  String? index;
 
   final _selections = <bool>[].obs;
   final screenHeight = Get.height.obs;
@@ -158,6 +159,27 @@ class DetailPage extends GetView<ProductController> {
                       ),
                     ),
                   ),
+                  GetStorage().read("id") ==
+                      "fn34nfnv8avf9ni30an"
+                      ? Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            context.goNamed("/update",params: {"id":param!,"index":index!});
+                            //Get.rootDelegate.toNamed("/update");
+                          },
+                          child: Text("수정")),
+                      TextButton(
+                          onPressed: () async {
+                            await p.delete(p.product.value.id!,index!);
+                            p.changeCategory(int.parse(index!));
+                            context.go("/");
+                            //Get.rootDelegate.toNamed("/");
+                          },
+                          child: Text("삭제")),
+                    ],
+                  )
+                      : Container(),
                   Container(
                       width: screenWidth.value,
                       child: Divider(height: 1,

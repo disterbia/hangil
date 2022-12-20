@@ -20,6 +20,7 @@ class AdminController extends GetxController{
 
   Future<bool> findByPassword(String password) async {
     dynamic result=await _adminRepository.findByPassword(password);
+    print("==========$result");
     if(result!=null){
       await GetStorage().write("id", result);
       return true;

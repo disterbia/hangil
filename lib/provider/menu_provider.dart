@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hangil/dto/update_dto.dart';
+import 'package:hangil/dto/menu_update_dto.dart';
 import 'package:hangil/model/menu.dart';
 class MenuProvider{
 
@@ -19,7 +19,7 @@ class MenuProvider{
     String? id = menu.id;
     return _store
         .doc("$_collection/$id")
-        .update(UpdateDto(menu: menu).MenuToJson());
+        .update(MenuUpdateDto(menu: menu).MenuToJson());
   }
 
   Future<void> delete(String id) => _store.doc("$_collection/$id").delete();

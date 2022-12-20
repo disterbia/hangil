@@ -28,10 +28,11 @@ class AdminPage extends GetView<MenuController> {
   final _selections = <bool>[].obs;
   RxBool visible = false.obs;
   RxBool uploadComplete = false.obs;
-  RxBool selectionChange=false.obs;
+  RxBool selectionChange = false.obs;
   List<String> deleteList = [];
   String? category;
   int? categoryIndex;
+  RxBool disableButton = false.obs;
 
   bool isDeskTop = GetPlatform.isDesktop;
   double screenHeight = Get.height;
@@ -39,7 +40,6 @@ class AdminPage extends GetView<MenuController> {
 
   List<XFile>? pickedFile;
   Quill.QuillController _controller = Quill.QuillController.basic();
-
 
   Widget menuTextForm(int index) {
     return CustomTextFormField(
@@ -51,64 +51,64 @@ class AdminPage extends GetView<MenuController> {
 
   @override
   Widget build(BuildContext context) {
-
-      return controller.obx((state)
-      {
-        if (m.isLoading.value) {
-          return Center(
-              child: Container(
-                  height: 50, width: 50, child: CircularProgressIndicator()));
-        }else{
-          _selections.value=[];
-          for (int i = 0; i < m.menus.length; i++){
-            _selections.add(false);
+    return controller.obx((state) {
+      if (m.isLoading.value) {
+        return Center(
+            child: Container(
+                height: 50, width: 50, child: CircularProgressIndicator()));
+      } else {
+        _selections.value = [];
+        for (int i = 0; i < m.menus.length; i++) {
+          _selections.add(false);
         }
-          _menuControllerList = [];
-          textFormList.value = [];
-          textList.value = [];
-          visible.value = false;
-          for (int i = 0; i < m.menus.length; i++) {
-            //if(length<=_menuControllerList.length) break;
-            _menuControllerList.add(TextEditingController());
-            _menuControllerList[i].text = m.menus[i].name!;
-            textList.add(Text(
-              m.menus[i].name!,
-              style: TextStyle(fontSize: 20),
-            ));
-            textFormList.add(menuTextForm(i));
-          }
+        _menuControllerList = [];
+        textFormList.value = [];
+        textList.value = [];
+        visible.value = false;
+        for (int i = 0; i < m.menus.length; i++) {
+          //if(length<=_menuControllerList.length) break;
+          _menuControllerList.add(TextEditingController());
+          _menuControllerList[i].text = m.menus[i].name!;
+          textList.add(Text(
+            m.menus[i].name!,
+            style: TextStyle(fontSize: 20),
+          ));
+          textFormList.add(menuTextForm(i));
         }
-        return Obx(() {
-          selectionChange.value;
-              return SafeArea(
-                  child: Scaffold(
-                body: SingleChildScrollView(
-                  primary: false,
-                    child: Column(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          visible.value = !visible.value;
-                        },
-                        child: Text(visible.value ? "취소" : "메뉴수정")),
-                    menuForm(),
-                    visible.value
-                        ? Container()
-                        : ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                for (int i = 0; i < textFormList.length; i++) {
-                                  await m.updateMenu(Menu(
-                                      id: m.menus[i].id,
-                                      name: _menuControllerList[i].text));
-                                }
-                                await m.findAll();
+      }
+      return Obx(() {
+        selectionChange.value;
+        return SafeArea(
+            child: Scaffold(
+          body: SingleChildScrollView(
+              primary: false,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        visible.value = !visible.value;
+                      },
+                      child: Text(visible.value ? "취소" : "메뉴수정")),
+                  menuForm(),
+                  visible.value
+                      ? Container()
+                      : ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              for (int i = 0; i < textFormList.length; i++) {
+                                await m.updateMenu(Menu(
+                                    id: m.menus[i].id,
+                                    name: _menuControllerList[i].text));
                               }
-                            },
-                            child: Text("적용")),
-                    Divider(),
-                    productScrollView(),
-                    ElevatedButton(
+                              await m.findAll();
+                            }
+                          },
+                          child: Text("적용")),
+                  Divider(),
+                  productScrollView(),
+                  AbsorbPointer(
+                    absorbing: disableButton.value,
+                    child: ElevatedButton(
                         onPressed: () async {
                           bool temp = false;
                           for (var element in _selections) {
@@ -132,35 +132,38 @@ class AdminPage extends GetView<MenuController> {
                                     ));
                             return;
                           }
-                          if(_controller.document.isEmpty()){
+                          if (_controller.document.isEmpty()) {
                             print("dd");
                           }
-                            if(pickedFile!=null) {
-                              if (_productKey.currentState!.validate()) {
-                                var json = jsonEncode(_controller.document.toDelta().toJson());
-                               await p.uploadImageToStorage(pickedFile,
-                                    Product(
+                          if (pickedFile != null) {
+                            if (_productKey.currentState!.validate()) {
+                              var json = jsonEncode(
+                                  _controller.document.toDelta().toJson());
+                              disableButton.value = !disableButton.value;
+                              await m.uploadImageToStorage(
+                                  pickedFile,
+                                  Product(
                                       name: titleController.text,
                                       comment: commentController.text,
                                       price: priceController.text,
                                       category: category,
-                                      body:json
-                                    )
-                                );
-                                //p.changeCategory(categoryIndex!);
-                                context.go("/home/$categoryIndex");
-                                await p.findAll();
-                              }
-
+                                      body: json));
+                              //p.changeCategory(categoryIndex!);
+                              context.go("/home/$categoryIndex");
+                              await p.findAll();
                             }
-                            },
-                        child: Text("상품 업로드"))
-                  ],
-                )),
-              ));
-            });
-          });
-
+                          }
+                        },
+                        child: Text("상품 업로드")),
+                  )
+                ],
+              )),
+        ));
+      });
+    },
+        onLoading: Center(
+            child: Container(
+                height: 50, width: 50, child: CircularProgressIndicator())));
   }
 
   Widget menuForm() {
@@ -316,10 +319,10 @@ class AdminPage extends GetView<MenuController> {
                     onPressed: (index) {
                       for (int i = 0; i < _selections.length; i++) {
                         _selections[i] = i == index;
-                        selectionChange.value= !selectionChange.value;
+                        selectionChange.value = !selectionChange.value;
                       }
                       category = m.menus[index].id;
-                      categoryIndex=index;
+                      categoryIndex = index;
                     },
                     selectedColor: Colors.red,
                   )),

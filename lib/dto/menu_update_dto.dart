@@ -1,9 +1,9 @@
 import 'package:hangil/model/menu.dart';
 
-class UpdateDto {
+class MenuUpdateDto {
   final Menu? menu;
 
-  UpdateDto({
+  MenuUpdateDto({
     this.menu});
 
   Map<String, dynamic> MenuToJson() =>

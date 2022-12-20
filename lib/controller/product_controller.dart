@@ -1,10 +1,9 @@
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:get/get.dart';
 import 'package:hangil/controller/menu_controller.dart';
 import 'package:hangil/model/product.dart';
 import 'package:hangil/repository/product_repository.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as Path;
+
 
 class ProductController extends GetxController with StateMixin {
   final ProductRepository _productRepository = ProductRepository();
@@ -57,44 +56,31 @@ class ProductController extends GetxController with StateMixin {
   }
 
 
-
-  Future<void> uploadImageToStorage(
-      List<XFile>? pickedFile, Product product) async {
-    if (pickedFile == null) return;
-    List<String> urlList = [];
-    change(null, status: RxStatus.loading());
-    for (int i = 0; i < pickedFile.length; i++) {
-      Reference _reference = FirebaseStorage.instance.ref().child(
-          'product/${product.category}/${Path.basename(pickedFile[i].path)}');
-      await _reference
-          .putData(
-        await pickedFile[i].readAsBytes(),
-        SettableMetadata(contentType: 'image/jpeg'),
-      )
-          .whenComplete(() async {
-        await _reference.getDownloadURL().then((value) {
-          urlList.add(value);
-          print(value);
-        });
-      });
-    }
-    Product newProduct = Product(
-        name: product.name,
-        comment: product.comment,
-        price: product.price,
-        category: product.category,
-        body: product.body,
-        imageUrls: urlList
-    );
-    await save(newProduct);
-
-    change(null, status: RxStatus.success());
-  }
-
   Future<void> save(Product newProduct) async {
     change(null, status: RxStatus.loading());
     Product product = await _productRepository.save(newProduct);
     //this.product.value=product;
+    change(null, status: RxStatus.success());
+  }
+
+  Future<void> delete(String id,String index) async {
+    int temp = int.parse(index);
+    change(null,status: RxStatus.loading());
+    Product product = await _productRepository.findById(id);
+    //findByCategory(product.category!);
+    await _productRepository.delete(id);
+    productsList[temp].removeWhere((element) => element.id==id);
+    products.value = productsList[temp];
+
+    change(null, status: RxStatus.success());
+  }
+
+  Future<void> updateProduct(Product newProduct) async {
+    change(null,status: RxStatus.loading());
+    await _productRepository.update(newProduct);
+    for(int i =0;i<m.menus.length;i++){
+      await findByCategory(m.menus[i].id!);
+    }
     change(null, status: RxStatus.success());
   }
 }

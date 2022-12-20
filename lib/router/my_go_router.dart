@@ -6,14 +6,17 @@ import 'package:hangil/view/check_page.dart';
 import 'package:hangil/view/detail_page.dart';
 import 'package:hangil/view/home_page.dart';
 import 'package:hangil/view/test4.dart';
+import 'package:hangil/view/update_page.dart';
 
 class MyRoutes {
   static const HOME = '/';
   static const HOME2 = '/home/:index';
   static const ADMIN = '/mj';
   static const CHECK = '/check';
-  static const DETAIL = '/detail/:index';
+  static const DETAIL = '/detail/:index/:id';
+  static const UPDATE = '/update/:index/:id';
   static const TEST4 = '/test4';
+
 }
 
 class MyPages {
@@ -47,7 +50,14 @@ class MyPages {
       ),
       GoRoute(
         path: MyRoutes.DETAIL,
-        builder: (context, state) =>  DetailPage(param:state.params['index']),
+        name: "/detail",
+        builder: (context, state) {
+          return DetailPage(param: state.params['id'],index: state.params["index"],);},
+      ),
+      GoRoute(
+        path: MyRoutes.UPDATE,
+          name: "/update",
+        builder: (context, state) => UpdatePage(param:state.params['id'],index: state.params['index'],)
       ),
       GoRoute(
           path: MyRoutes.TEST4,

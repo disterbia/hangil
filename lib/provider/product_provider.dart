@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hangil/dto/product_update_dto.dart';
 import 'package:hangil/model/product.dart';
 
 class ProductProvider{
@@ -23,4 +24,15 @@ class ProductProvider{
         await v.update({"id": v.id});
         return v.get();
       });
+
+  Future<void> update(Product product) {
+    String? id = product.id;
+    return _store
+        .doc("$_collection/$id")
+        .update(ProductUpdateDto(product: product).ProductToJson());
+  }
+
+  Future<void> delete(String id) => _store.doc("$_collection/$id").delete();
+
+
 }

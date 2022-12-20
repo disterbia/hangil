@@ -267,7 +267,8 @@ class HomePage extends GetView<ProductController> {
                                           String param =
                                               p.products[index].id!;
                                           await p.findById(param);
-                                          context.go("/detail/$param");
+                                          //context.go("/detail/$param");
+                                          context.goNamed("/detail",params:{"index":this.param!,"id":param} );
                                           // Get.to(() => DetailPage(),
                                           //     transition: Transition.size);
                                         },
@@ -315,7 +316,8 @@ class HomePage extends GetView<ProductController> {
     },
         onLoading: Center(
             child: Container(
-                height: 50, width: 50, child: CircularProgressIndicator())));
+                height: 50, width: 50, child: CircularProgressIndicator()))
+    );
   }
 
   List<Widget> createButton(int a, int b, BuildContext context) {
